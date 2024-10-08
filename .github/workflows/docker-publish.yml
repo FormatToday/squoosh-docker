@@ -4,6 +4,12 @@ on:
   # 定期触发此 workflow (例如每周更新一次)
   schedule:
     - cron: '23 17 * * 1'  # 每周一的北京时间1:23 AM (即UTC时间周日下午5:23)
+  push:
+    branches:
+      - main  # 监听对 main 分支的代码推送
+  pull_request:
+    branches:
+      - main  # 监听对 main 分支的 PR 合并
   # 手动触发工作流
   workflow_dispatch:
 
