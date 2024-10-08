@@ -16,10 +16,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      #获取当前时间并定义镜像标签
+      - name: Set up image tags
+        id: vars
+        run: |
+          # 获取当前时间，格式为 YYYYMMDD
+          export DATE_TAG=$(date +'%Y%m%d')
+          echo "DATE_TAG=${DATE_TAG}" >> $GITHUB_ENV
+        shell: bash
+
       # 构建 squoosh 的 Docker 镜像
       - name: Build Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/squoosh:latest .
+         # 构建两个标签的镜像：latest 和基于日期的标签
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/squoosh:${{ env.DATE_TAG }} -t ${{ secrets.DOCKER_USERNAME }}/squoosh:latest .
 
       # Step 4: 登录 Docker Hub
       - name: Login to Docker Hub
@@ -31,4 +41,6 @@ jobs:
       # Step 5: 推送 Docker 镜像到 Docker Hub
       - name: Push Docker Image
         run: |
+         # 推送 latest 和日期标签的镜像
+          docker push your-dockerhub-username/squoosh:${{ env.DATE_TAG }}
           docker push ${{ secrets.DOCKER_USERNAME }}/squoosh:latest
