@@ -48,5 +48,5 @@ jobs:
       - name: Push Docker Image
         run: |
          # 推送 latest 和日期标签的镜像
-          docker push your-dockerhub-username/squoosh:${{ env.DATE_TAG }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/squoosh:${{ env.DATE_TAG }}
           docker push ${{ secrets.DOCKER_USERNAME }}/squoosh:latest
