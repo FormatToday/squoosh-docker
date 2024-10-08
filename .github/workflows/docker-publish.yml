@@ -1,0 +1,34 @@
+name: 更新服务镜像
+
+on:
+  # 定期触发此 workflow (例如每周更新一次)
+  schedule:
+    - cron: '23 17 * * 1'  # 每周一的北京时间1:23 AM (即UTC时间周日下午5:23)
+  # 手动触发工作流
+  workflow_dispatch:
+
+jobs:
+  update-build-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 检出仓库代码
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # 构建 squoosh 的 Docker 镜像
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/squoosh:latest .
+
+      # Step 4: 登录 Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Step 5: 推送 Docker 镜像到 Docker Hub
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/squoosh:latest
